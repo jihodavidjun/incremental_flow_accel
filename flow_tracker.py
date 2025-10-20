@@ -5,9 +5,6 @@ from utils.logger import log_result, console
 from utils.openlane_manager import ensure_openlane_container  
 
 def detect_changed_stage():
-    """Compare previous and current file hashes, return the earliest changed stage
-    and all downstream dependent stages (in order)."""
-
     # Load flow dependencies (maps stages to file patterns)
     with open("config/flow_dependencies.json") as f:
         deps = json.load(f)
@@ -46,7 +43,6 @@ def detect_changed_stage():
     return order[idx:]
 
 
-# ------------------ MAIN EXECUTION BLOCK ------------------
 if __name__ == "__main__":
     affected_stages = detect_changed_stage()
 
