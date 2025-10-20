@@ -1,11 +1,7 @@
 import subprocess, time
 
 def run_openlane(start_stage, design="spm", container="openlane"):
-    """
-    Run OpenLane using the flow.tcl interface (for v1.0.2 classic container).
-    Skips deprecated -from/-to flags.
-    """
-    # NOTE: flow.tcl auto-resumes cached runs internally; we just give it the design path
+    # NOTE: flow.tcl auto-resumes cached runs internally
     cmd = f"docker exec {container} flow.tcl -design {design}"
 
     print(f"[INFO] Starting OpenLane from stage: {start_stage}")
