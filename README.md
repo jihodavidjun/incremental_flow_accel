@@ -44,7 +44,8 @@ incremental_flow_accel/
 │ ├── flow_state.json # Stores last-known file hashes
 │ └── results_log.csv # Cumulative runtime log
 │
-└── flow_tracker.py # Main entrypoint for the incremental runner
+├── flow_tracker.py # Main entrypoint for the incremental runner
+└── README.md
 ```
 
 ---
