@@ -1,7 +1,7 @@
 # Incremental Flow Accelerator — Python / OpenLane
 
-This repository contains a Python-based orchestration layer designed to **accelerate OpenLane RTL-to-GDSII flows** by detecting and re-running only modified stages.  
-It was developed to explore **incremental physical design automation** concepts such as dependency tracking, stage caching, and runtime optimization.
+- This repository contains a Python-based orchestration layer designed to **accelerate OpenLane RTL-to-GDSII flows** by detecting and re-running only modified stages.  
+- It was developed to explore **incremental physical design automation** concepts such as dependency tracking, stage caching, and runtime optimization.
 
 ---
 
