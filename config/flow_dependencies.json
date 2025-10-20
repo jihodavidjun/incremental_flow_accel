@@ -1,0 +1,34 @@
+{
+  "stages": {
+    "synthesis": [
+      "../OpenLane/designs/spm/src/*.v",
+      "../OpenLane/designs/spm/config.tcl"
+    ],
+    "floorplan": [
+      "../OpenLane/designs/spm/config.tcl",
+      "../OpenLane/designs/spm/PDN.tcl",
+      "../OpenLane/designs/spm/macro_placement.cfg"
+    ],
+    "placement": [
+      "../OpenLane/designs/spm/config.tcl"
+    ],
+    "cts": [
+      "../OpenLane/designs/spm/config.tcl"
+    ],
+    "routing": [
+      "../OpenLane/designs/spm/config.tcl"
+    ],
+    "signoff": [
+      "../OpenLane/designs/spm/config.tcl"
+    ]
+  },
+  "stage_order": [
+    "test",
+    "synthesis",
+    "floorplan",
+    "placement",
+    "cts",
+    "routing",
+    "signoff"
+  ]
+}

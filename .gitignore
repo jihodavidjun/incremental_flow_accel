@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+data/flow_state.json
+data/results_log.csv
+*.log
+.DS_Store
