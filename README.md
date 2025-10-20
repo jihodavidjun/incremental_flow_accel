@@ -118,10 +118,10 @@ incremental_flow_accel/
 ---
 
 ## Tools Used
-- Python 3.11 – orchestration and logging
-- Docker + OpenLane 2.0 – RTL-to-GDSII automation
-- SkyWater 130 PDK – validation process
-- VSCode – development & visualization
+- **Python 3.11** – orchestration and logging
+- **Docker + OpenLane 2.0** – RTL-to-GDSII automation
+- **SkyWater 130 PDK** – validation process
+- **VSCode** – development & visualization
 
 --- 
 
