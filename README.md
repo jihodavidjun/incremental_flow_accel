@@ -109,7 +109,7 @@ incremental_flow_accel/
 ---
 
 ## Example Validation (SKY130)
-| Run Type | Runtime (min) | WNS (ns) | DRC Count | Area (µm²) |
+| Run Type | Runtime (mins) | WNS (ns) | DRC Count | Area (µm²) |
 | :------- | :------: | -------: | -------: | -------: |
 | Full Flow | 60.0 | -0.05 | 0 | 123,456 |
 | Incremental | 15.5 (~4x faster) | -0.05 | 0 | 123,456 |
