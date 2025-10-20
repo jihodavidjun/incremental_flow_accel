@@ -4,7 +4,6 @@ from rich.console import Console
 console = Console()
 
 def get_openlane_container_name():
-    """Return the name of the first active OpenLane container, if any."""
     result = subprocess.run(
         "docker ps --format '{{.Image}} {{.Names}}' | grep 'openroad-project/openlane' | head -n 1 | awk '{print $2}'",
         shell=True, capture_output=True, text=True
@@ -14,10 +13,6 @@ def get_openlane_container_name():
 
 
 def ensure_openlane_container(timeout=30):
-    """
-    Ensure an OpenLane Docker container is running.
-    If not, start one and wait for it to appear.
-    """
     name = get_openlane_container_name()
     if name:
         console.log(f"[bold green]OpenLane container already running:[/bold green] {name}")
