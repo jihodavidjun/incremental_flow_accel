@@ -15,5 +15,3 @@ def log_result(stage, runtime):
     exists = os.path.exists(path)
     df.to_csv(path, mode='a', header=not exists, index=False)
     console.log(f"[bold green]✔ Logged result:[/bold green] {stage} ({runtime} min)")
-
-# test change for incremental run 6
