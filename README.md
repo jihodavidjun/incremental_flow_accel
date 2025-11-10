@@ -90,7 +90,7 @@ incremental_flow_accel/
      efabless/openlane:2024.09.05r1
    ```
    - Windows 10/11 (WSL 2 required)
-   1. Install Docker Desktop for Windows (https://www.docker.com/products/docker-desktop/). 
+   1. Install Docker Desktop for Windows. 
    2. Enable WSL 2 backend and install Ubuntu 22.04 from Microsoft Store.
    3. Run commands inside the Ubuntu terminal (same as the Linux section above).
    
