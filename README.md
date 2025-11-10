@@ -10,7 +10,7 @@
 The system wraps around OpenLane’s `flow.tcl` using Python’s `subprocess` interface and automatically:
 - Tracks design and configuration file changes using SHA256 hashing.
 - Detects which stages (e.g., synthesis, floorplan, CTS) are affected.
-- Re-invokes the OpenLane flow **only from the modified stage** onward (still reuses cached layout and timing data for unchanged stages).
+- Re-invokes the OpenLane flow starting from the earliest modified stage onward, reusing cached layout and timing data for all prior stages.
 - Logs runtime data to a CSV file for benchmarking runtime and QoR consistency.
 
 This approach aims to **reduce full-flow turnaround time** during iterative design debugging, while preserving design quality.
@@ -22,7 +22,7 @@ This approach aims to **reduce full-flow turnaround time** during iterative desi
 - **Incremental Stage Detection:** Automatically determines which stages need to re-run based on file-hash changes.
 - **Smart Orchestration:** Integrates with OpenLane Docker containers and reuses prior results.
 - **Runtime Benchmarking:** Records all runs with timestamps and stage runtimes.
-- **QoR Consistency:** Targets up to 4× speed-up with no timing, area, or DRC degradation.
+- **QoR Consistency:** Targets measurable runtime reduction with no timing, area, or DRC degradation.
 
 ---
 
