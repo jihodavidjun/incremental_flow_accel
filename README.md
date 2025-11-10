@@ -1,6 +1,7 @@
 # Incremental Flow Accelerator — Python / OpenLane
 
-- This repository contains a Python-based orchestration layer designed to **accelerate OpenLane RTL-to-GDSII flows** by detecting and re-running only modified stages.  
+- This repository contains a Python-based orchestration layer designed to **accelerate OpenLane RTL-to-GDSII flows** by detecting and re-running only modified stages.
+- The project replicates the engineering change order (ECO) principle in open-source P&R flows — reducing redundant computation while maintaining signoff consistency.  
 - It was developed to explore **incremental physical design automation** concepts such as dependency tracking, stage caching, and runtime optimization.
 
 ---
@@ -35,6 +36,7 @@ incremental_flow_accel/
 │ ├── flow_runner.py # Executes OpenLane flow.tcl stages
 │ ├── file_hash.py # Computes and compares SHA256 hashes
 │ ├── logger.py # Records runtime logs to CSV
+│ ├── qor_parser.py # Parses OpenLane reports/metrics to extract QoR
 │ └── openlane_manager.py # Manages container interaction and flow logic
 │
 ├── config/
@@ -56,15 +58,42 @@ incremental_flow_accel/
    - [Download Docker Desktop](https://www.docker.com/products/docker-desktop)
    - Ensure Docker Engine is running (check with `docker ps`)
 
-2. **Clone and set up OpenLane (on your local terminal)**
+2. **OpenLane container**
    ```bash
-   git clone https://github.com/The-OpenROAD-Project/OpenLane.git
-   cd OpenLane
-   make pull-openlane
-   make mount
+   git clone https://github.com/The-OpenROAD-Project/OpenLane.git ~/OpenLane
+   cd ~/OpenLane
    ```
-   This mounts the OpenLane container with all required tools (Magic, OpenROAD, etc.) and maps your local directories.
-
+   
+   - Mac (Apple Silicon / M1 / M2)
+   ```bash
+   docker pull efabless/openlane:2024.09.05r1-amd64
+   docker rm -f openlane 2>/dev/null || true
+   docker run -dit \
+     --platform linux/amd64 \
+     --name openlane \
+     -v "$HOME/OpenLane:/openlane" \
+     -v "$HOME/OpenLane/pdks:/pdks" \
+     -v "$HOME/OpenLane/workspace:/workspace" \
+     -w /workspace \
+     efabless/openlane:2024.09.05r1-amd64
+   ```
+   - Mac (Intel) or Linux (x86-64)
+   ```bash
+   docker pull efabless/openlane:2024.09.05r1
+   docker rm -f openlane 2>/dev/null || true
+   docker run -dit \
+     --name openlane \
+     -v "$HOME/OpenLane:/openlane" \
+     -v "$HOME/OpenLane/pdks:/pdks" \
+     -v "$HOME/OpenLane/workspace:/workspace" \
+     -w /workspace \
+     efabless/openlane:2024.09.05r1
+   ```
+   - Windows 10/11 (WSL 2 required)
+   1. Install Docker Desktop for Windows (https://www.docker.com/products/docker-desktop/). 
+   2. Enable WSL 2 backend and install Ubuntu 22.04 from Microsoft Store.
+   3. Run commands inside the Ubuntu terminal (same as the Linux section above).
+   
 3. **Clone this repository**
    ```bash
    git clone https://github.com/jihodavidjun/incremental_flow_accel.git
@@ -84,36 +113,35 @@ incremental_flow_accel/
 
 ## How to Run
 
-1. **Run a full flow (initial baseline)**
-   `python flow_tracker.py`
-   - Runs OpenLane from start to signoff.
-   - Generates `data/flow_state.json` (stores file hashes)
-   - Logs runtime data to `data/results_log.csv`.
-
-2. **Modify a design file (trigger incremental)**
-   ```bash
-   cd ~/OpenLane/designs/spm/src
-   echo "// logic change" >> adder.v
-   ```
-
-3. **Run incrementally**
+1. **Baseline full flow (creates the first run & caches)**
+   Either run OpenLane yourself:
+   `docker exec openlane flow.tcl -design spm`
+   Or run via the project script (this still does a full first run, then logs QoR):
    ```bash
    cd ~/incremental_flow_accel
-   python flow_tracker.py
+   python3 -m utils.flow_runner --design spm --container openlane
    ```
-   - Detects which design files have changed (e.g., `adder.v`).
-   - Determines which downstream stages (e.g., synthesis → placement → routing) are affected.
-   - Reuses existing data (netlists, DEFs, SPEF, etc.) from previous runs for all unchanged stages.
-   - Automatically resumes the flow from the earliest modified stage onward.
-   - Logs runtime and results to `data/results_log.csv`.
-  
----
+   This will:
+   - Emit a run folder under ~/OpenLane/designs/spm/runs/RUN_*
+   - Parse QoR and append to data/results_log.csv
+   - Save file hashes to data/flow_state.json
+   
+2. **Make a change that should trigger incremental**
+   Edit something under ~/OpenLane/designs/spm/ (e.g., RTL or config):
+   `echo "// small logic tweak" >> ~/OpenLane/designs/spm/src/spm.v`
 
-## Example Validation (SKY130)
-| Run Type | Runtime (mins) | WNS (ns) | DRC Count | Area (µm²) |
-| :------- | :------: | -------: | -------: | -------: |
-| Full Flow | 60.0 | -0.05 | 0 | 123,456 |
-| Incremental | 15.5 (~4x faster) | -0.05 | 0 | 123,456 |
+3. **Incremental re-run (stage-aware)**
+   ```bash
+   cd ~/incremental_flow_accel
+   python3 -m utils.flow_runner --design spm --container openlane
+   ```
+   You should see logs like:
+   ```bash
+   [INFO] Detected design changes for 'spm' — updating state.
+   [INFO] Re-running flow from stage 'floorplan' for design 'spm'
+   [INFO] Flow completed successfully in 8.96 minutes.
+   [INFO] Logged PD metrics → /Users/<you>/incremental_flow_accel/data/results_log.csv
+   ```
 
 ---
 
@@ -121,7 +149,8 @@ incremental_flow_accel/
 - **Python 3.11** – orchestration and logging
 - **Docker + OpenLane 2.0** – RTL-to-GDSII automation
 - **SkyWater 130 PDK** – validation process
-- **VSCode** – development & visualization
+- **Pandas** – QoR parsing and CSV logging
+- **Watchdog** – file hash monitoring
 
 --- 
 
