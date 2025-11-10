@@ -1,6 +1,6 @@
 # Incremental Flow Accelerator — Python / OpenLane
 
-- This repository contains a Python-based orchestration layer designed to **accelerate OpenLane RTL-to-GDSII flows** by detecting and re-running only modified stages.
+- This repository contains a Python-based orchestration layer designed to **accelerate OpenLane physical design flows** by detecting and re-running only modified stages.
 - The project replicates the engineering change order (ECO) principle in open-source P&R flows — reducing redundant computation while maintaining signoff consistency.  
 - It was developed to explore **incremental physical design automation** concepts such as dependency tracking, stage caching, and runtime optimization.
 
@@ -147,7 +147,7 @@ incremental_flow_accel/
 
 ## Tools Used
 - **Python 3.11** – orchestration and logging
-- **Docker + OpenLane 2.0** – RTL-to-GDSII automation
+- **Docker + OpenLane 2.0** – flow automation
 - **SkyWater 130 PDK** – validation process
 - **Pandas** – QoR parsing and CSV logging
 - **Watchdog** – file hash monitoring
